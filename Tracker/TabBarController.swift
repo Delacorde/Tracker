@@ -6,7 +6,7 @@ class TabBarController: UITabBarController{
         super.viewDidLoad()
         
         tabBar.tintColor = .blue
-        let mainVC = ViewController()
+        let mainVC = TrackerViewController()
         mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
         
@@ -14,8 +14,8 @@ class TabBarController: UITabBarController{
         statisticsVC.view.backgroundColor = .white
         statisticsVC.tabBarItem = UITabBarItem(
             title: "Статистика",
-            image: UIImage(resource: .grayRabbit),
-            selectedImage: UIImage(resource: .grayRabbit)
+            image: UIImage(resource: .hare),
+            selectedImage: UIImage(resource: .hare)
         )
         let mainNC = UINavigationController(rootViewController: mainVC)
         let statisticsNC = UINavigationController(rootViewController: statisticsVC)
