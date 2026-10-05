@@ -10,6 +10,9 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(resource: .plusButton), for: .normal)
+        button.contentHorizontalAlignment = .center
+        button.contentVerticalAlignment = .center
+        
         return button
     }()
     private lazy var headerTitleLabel: UILabel = {
@@ -100,18 +103,18 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
                 
                 // Add Button
                 addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
+                
                 addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
+                
                 addButton.heightAnchor.constraint(equalToConstant: 42),
                 addButton.widthAnchor.constraint(equalToConstant: 42),
-                
+                // searchField 
                 searchInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
                 searchInputTextField.topAnchor.constraint(equalTo: headerTitleLabel.bottomAnchor, constant: 7),
                 searchInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
                 searchInputTextField.heightAnchor.constraint(equalToConstant: 36),
-                
-                dateSelectionPicker.centerYAnchor.constraint(equalTo: addButton.centerYAnchor),
-                dateSelectionPicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                dateSelectionPicker.widthAnchor.constraint(equalToConstant: 100),
+                //date picker
+                dateSelectionPicker.topAnchor.constraint( equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1 ), dateSelectionPicker.trailingAnchor.constraint( equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16 ),
                 
                 emptyStateImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 emptyStateImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),

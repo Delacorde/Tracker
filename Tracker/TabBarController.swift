@@ -5,7 +5,7 @@ class TabBarController: UITabBarController{
     override func viewDidLoad(){
         super.viewDidLoad()
         
-        tabBar.tintColor = .blue
+        tabBar.tintColor = .colorSection3
         let mainVC = TrackerViewController()
         mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
@@ -19,6 +19,9 @@ class TabBarController: UITabBarController{
         )
         let mainNC = UINavigationController(rootViewController: mainVC)
         let statisticsNC = UINavigationController(rootViewController: statisticsVC)
+        
+        mainNC.setNavigationBarHidden(true, animated: false)
+        statisticsNC.setNavigationBarHidden(true, animated: false)
         
         setViewControllers([mainNC, statisticsNC], animated: false)
     }

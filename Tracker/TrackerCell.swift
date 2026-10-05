@@ -17,7 +17,7 @@ final class TrackerCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.borderWidth = 1
         view.backgroundColor = UIColor(resource: .greenSection18)
-        view.layer.borderColor = UIColor(resource: .purpleSection17).cgColor
+        view.layer.borderColor = UIColor(resource: .borderCard).cgColor
         return view
     }()
     
@@ -65,7 +65,8 @@ final class TrackerCell: UICollectionViewCell {
         button.layer.masksToBounds = true
         button.tintColor = .white
         let plus = UIImage.SymbolConfiguration(pointSize: 11, weight: .bold)
-        let image = UIImage(named: "plus")
+        let image = UIImage(systemName: AppIcons.SystemSymbols.addIcon, withConfiguration: plus
+        )
         button.setImage(image, for: .normal)
         
         return button
@@ -124,7 +125,7 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.name
         countLabel.text = completedDays.formatDaysCount()
-        let image = isCompleted ? AppIcons.SystemSymbols.addIcon : AppIcons.SystemSymbols.checkmarkIcon
+        let image = isCompleted ? AppIcons.SystemSymbols.checkmarkIcon : AppIcons.SystemSymbols.addIcon
         let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .bold)
         let imageName = UIImage(systemName: image, withConfiguration: config)
         plusButton.setImage(UIImage(systemName: image), for: .normal)

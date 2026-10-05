@@ -16,7 +16,7 @@ final class HeaderView: UICollectionReusableView {
             addSubview(titleLabel)
             
             NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 128),
+                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
                 titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             ])
         }
