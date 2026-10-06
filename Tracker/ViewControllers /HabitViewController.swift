@@ -4,13 +4,70 @@ protocol HabitViewDelegate: AnyObject {
     func didCreateTracker(_ tracker: Tracker)
 }
 
-final class HabitViewController: UIViewController, ScheduleViewControllerDelegate, UITextFieldDelegate {
+final class HabitViewController: UIViewController, ScheduleViewControllerDelegate, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    let availibaleEmojis: [String] = ["🫩","🫅🏻","🧠","🤯","❤️","💁🏼","😇","🙂","🤓","🤩","😟","😩","😫","😡","😳","🫠","🫨", "✌🏾"]
+    var selectedEmoji: String? = nil
     
     private var selectedDays:[WeekDays] = []
     private var scheduleSubtitle: String?
     weak var delegate: HabitViewDelegate?
     private let options = ["Категория", "Расписание"]
 
+    private lazy var emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 1
+        
+        layout.sectionInset = UIEdgeInsets(top: 24, left: 16, bottom: 0, right: 16)
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        
+        collectionView .register(EmojiSelectionCell.self, forCellWithReuseIdentifier: EmojiSelectionCell.identifier)
+        collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        return collectionView
+    }()
+    // dataSource funcs
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderView.identifier, for: indexPath) as? HeaderView else {
+            return UICollectionReusableView()
+        }
+        
+        headerView.titleLabel.text = "Emoji"
+        return headerView
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return availibaleEmojis.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiSelectionCell.identifier, for: indexPath) as? EmojiSelectionCell else {
+            return UICollectionViewCell()
+        }
+        let emoji = availibaleEmojis[indexPath.item]
+        let isSelected = (selectedEmoji == emoji)
+        
+        cell.configure(with: emoji, isSelected: isSelected)
+        return cell
+    }
+    // Delegate funcs
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let tappedEmoji = availibaleEmojis[indexPath.item]
+        if selectedEmoji == tappedEmoji {
+            selectedEmoji = nil
+        } else {
+            selectedEmoji = tappedEmoji
+        }
+        collectionView.reloadData()
+    }
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .insetGrouped)
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -85,6 +142,7 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
         view.addSubview(cancelButton)
         view.addSubview(createButton)
         view.addSubview(tableView)
+        view.addSubview(emojiCollectionView)
         createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
     }
@@ -96,6 +154,11 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
     
     private func constraintsActivate() {
         NSLayoutConstraint.activate([
+            
+            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor,constant: 20),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 204),
 
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 31),
@@ -211,5 +274,15 @@ extension HabitViewController: UITableViewDelegate {
             scheduleVC.delegate = self
             navigationController?.pushViewController(scheduleVC, animated: true)
         }
+    }
+}
+extension HabitViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 52, height: 52)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 30)
     }
 }

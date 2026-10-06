@@ -2,10 +2,14 @@ import UIKit
 
 final class TrackerViewController: UIViewController, HabitViewDelegate {
     // MARK: - Properties
+    
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let geometryParams = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
+    
+    
+    
     private lazy var addButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
