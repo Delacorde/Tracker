@@ -9,19 +9,18 @@ final class TrackerCell: UICollectionViewCell {
     
     weak var delegate: TrackerCellDelegate?
     
-    
     private let cardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.borderWidth = 1
-        view.backgroundColor = UIColor(resource: .greenSection18)
+        view.backgroundColor = UIColor(resource: .colorSection1) // Дефолтный цвет, он всё равно перезапишется
         view.layer.borderColor = UIColor(resource: .borderCard).cgColor
         return view
     }()
     
-    private var emojiContainerView: UIView = {
+    private let emojiContainerView: UIView = {
         let emoji = UIView()
         emoji.translatesAutoresizingMaskIntoConstraints = false
         emoji.backgroundColor = UIColor(resource: .emoji)
@@ -60,15 +59,13 @@ final class TrackerCell: UICollectionViewCell {
     private lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor(resource: .greenSection18)
+        button.backgroundColor = UIColor(resource: .colorSection1)
         button.layer.cornerRadius = 17
         button.layer.masksToBounds = true
         button.tintColor = .white
         let plus = UIImage.SymbolConfiguration(pointSize: 11, weight: .bold)
-        let image = UIImage(systemName: AppIcons.SystemSymbols.addIcon, withConfiguration: plus
-        )
+        let image = UIImage(systemName: AppIcons.SystemSymbols.addIcon, withConfiguration: plus)
         button.setImage(image, for: .normal)
-        
         return button
     }()
     
@@ -81,36 +78,38 @@ final class TrackerCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     private func setupConstraint() {
         NSLayoutConstraint.activate([
-            //CardView
+            // CardView
             cardView.topAnchor.constraint(equalTo: contentView.topAnchor),
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             cardView.heightAnchor.constraint(equalToConstant: 90),
-            //EmojiContainerView
+            // EmojiContainerView
             emojiContainerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             emojiContainerView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 12),
             emojiContainerView.widthAnchor.constraint(equalToConstant: 24),
             emojiContainerView.heightAnchor.constraint(equalToConstant: 24),
-            //EmojiLabel
+            // EmojiLabel
             emojiLabel.centerXAnchor.constraint(equalTo: emojiContainerView.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiContainerView.centerYAnchor),
-            //TitleLabel
+            // TitleLabel
             titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -12),
-            //CountLabel
+            // CountLabel
             countLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             countLabel.centerYAnchor.constraint(equalTo: plusButton.centerYAnchor),
             countLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor, constant: -8),
-            //PlusButton
+            // PlusButton
             plusButton.topAnchor.constraint(equalTo: cardView.bottomAnchor, constant: 8),
             plusButton.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
             plusButton.widthAnchor.constraint(equalToConstant: 34),
             plusButton.heightAnchor.constraint(equalToConstant: 34)
         ])
     }
+    
     private func setupView() {
         contentView.addSubview(cardView)
         contentView.addSubview(plusButton)
@@ -119,16 +118,47 @@ final class TrackerCell: UICollectionViewCell {
         cardView.addSubview(titleLabel)
         emojiContainerView.addSubview(emojiLabel)
         plusButton.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
-        
     }
-    func configure(isCompleted: Bool, completedDays: Int, tracker: Tracker){
+    
+    
+    private func getColorFromString(_ colorName: String) -> UIColor {
+        switch colorName {
+        case "ColorSection1": return .colorSection1
+        case "ColorSection2": return .colorSection2
+        case "ColorSection3": return .colorSection3
+        case "ColorSection4": return .colorSection4
+        case "ColorSection5": return .colorSection5
+        case "ColorSection6": return .colorSection6
+        case "ColorSection7": return .colorSection7
+        case "ColorSection8": return .colorSection8
+        case "ColorSection9": return .colorSection9
+        case "ColorSection10": return .colorSection10
+        case "ColorSection11": return .colorSection11
+        case "ColorSection12": return .colorSection12
+        case "ColorSection13": return .colorSection13
+        case "ColorSection14": return .colorSection14
+        case "ColorSection15": return .colorSection15
+        case "ColorSection16": return .colorSection16
+        case "ColorSection17": return .colorSection17
+        case "ColorSection18": return .colorSection18
+        default: return .colorSection1 // цвет по умолчанию
+        }
+    }
+    
+    // 2. Метод настройки ячейки (теперь он стоит ОТДЕЛЬНО, как и должен быть)
+    func configure(isCompleted: Bool, completedDays: Int, tracker: Tracker) {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.name
         countLabel.text = completedDays.formatDaysCount()
+        
+        
+        let dynamicColor = getColorFromString(tracker.color)
+        cardView.backgroundColor = dynamicColor
+        plusButton.backgroundColor = dynamicColor
+        
         let image = isCompleted ? AppIcons.SystemSymbols.checkmarkIcon : AppIcons.SystemSymbols.addIcon
         let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .bold)
-        let imageName = UIImage(systemName: image, withConfiguration: config)
-        plusButton.setImage(UIImage(systemName: image), for: .normal)
+        plusButton.setImage(UIImage(systemName: image, withConfiguration: config), for: .normal)
         plusButton.alpha = isCompleted ? 0.5 : 1.0
     }
     
@@ -136,4 +166,3 @@ final class TrackerCell: UICollectionViewCell {
         delegate?.trackerCellDidTapPlus(self)
     }
 }
-
