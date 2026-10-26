@@ -123,11 +123,12 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
             collectionView.reloadData()
         }
     private lazy var tableView: UITableView = {
-        let table = UITableView(frame: .zero, style: .insetGrouped)
+        let table = UITableView(frame: .zero, style: .grouped)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.backgroundColor = .clear
         table.isScrollEnabled = false
         table.separatorStyle = .singleLine
+        table.layer.cornerRadius = 16
         return table
     }()
     
@@ -204,6 +205,15 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
         textField.delegate = self
         textField.returnKeyType = .done
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
     private func setUpViews() {
         view.addSubview(titleLabel)
         view.addSubview(scrollView)
@@ -270,17 +280,17 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
             tableView.widthAnchor.constraint(equalToConstant: 343),
             tableView.heightAnchor.constraint(equalToConstant: 150),
             
-            // Коллекция Emoji (3 ряда по 6 штук = 18 элементов)
+            // Коллекция Emoji
             emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            emojiCollectionView.heightAnchor.constraint(equalToConstant: 245), // Высота под хедер + 3 ряда ячеек
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 204),
             
-            // Коллекция Цвет
-            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            // Коллекция Цветов
+            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 34),
             colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            colorCollectionView.heightAnchor.constraint(equalToConstant: 280), // Высота под хедер цветов
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 204),
             colorCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
         ])
     }

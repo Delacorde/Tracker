@@ -7,7 +7,16 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     private let geometryParams = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
+    private let trackerStore: TrackerStore
     
+    init(trackerStore: TrackerStore) {
+            self.trackerStore = trackerStore
+            super.init(nibName: nil, bundle: nil)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     
     
     private lazy var addButton: UIButton = {
@@ -68,9 +77,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
             collectionView.dataSource = self
             collectionView.delegate = self
             
-            let sampleTracker = Tracker(id: UUID(), name: "first tracker", color: "ColorSection1", emoji: "🫅🏼", schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
-            categories = [TrackerCategory(title: "Домашний уют", trackers: [sampleTracker])]
-            
+           
             collectionView.reloadData()
             checkEmptyState()
             

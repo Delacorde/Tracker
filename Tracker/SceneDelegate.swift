@@ -10,7 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    let persistenceContainer = PersistenceContainer()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -18,6 +18,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = TabBarController()
         window?.makeKeyAndVisible()
+        let window = UIWindow(windowScene: windowScene)
+               
+               let viewController = TrackerViewController(trackerStore: persistenceContainer.trackerStore)
+               let navigationController = UINavigationController(rootViewController: viewController)
+               
+               window.rootViewController = navigationController
+               self.window = window
+               window.makeKeyAndVisible()
+           }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -49,5 +58,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
-}
+
 
