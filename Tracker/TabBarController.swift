@@ -1,12 +1,14 @@
 import UIKit
 
 class TabBarController: UITabBarController{
+    private let persistenceContainer = PersistenceContainer()
+
     
     override func viewDidLoad(){
         super.viewDidLoad()
         
         tabBar.tintColor = .colorSection3
-        let mainVC = TrackerViewController()
+        let mainVC = TrackerViewController(trackerStore: persistenceContainer.trackerStore)
         mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
         

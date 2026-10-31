@@ -4,7 +4,7 @@ import UIKit
 final class PersistenceContainer {
     let trackerStore: TrackerStore
     let categoryStore: CategoryStore
-    let recordStore: RecordStore
+    let recordStore:  TrackerRecordStore
     
     private let context: NSManagedObjectContext
     
@@ -25,7 +25,7 @@ final class PersistenceContainer {
         
         self.trackerStore = TrackerStore(context: context)
         self.categoryStore = CategoryStore(context: context)
-        self.recordStore = RecordStore(context: context)
+        self.recordStore = TrackerRecordStore(context: context)
     }
     
     //етод сохранения
