@@ -8,15 +8,16 @@ protocol TrackerStoreDelegate: AnyObject {
 protocol TrackerStoreProtocol {
     var trackers: [Tracker] { get }
     var delegate: TrackerStoreDelegate? { get set }
-    func makeTracker(from tracker: Tracker, in category: TrackerCategoryCoreData) throws
+    func makeTracker(from tracker: Tracker, in categoryTitle: String) throws
 }
 
 final class TrackerStore: NSObject, TrackerStoreProtocol {
     private let context: NSManagedObjectContext
+    
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        
+         
         let controller = NSFetchedResultsController(
             fetchRequest: request,
             managedObjectContext: context,
@@ -24,7 +25,7 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
             cacheName: nil
         )
         controller.delegate = self
-        
+         
         try? controller.performFetch()
         return controller
     }()
@@ -56,16 +57,23 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
             let color = trackerCoreData.color,
             let emoji = trackerCoreData.emoji
         else {
-            throw NSError(domain: "TrackerStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode Tracker"])
+            throw NSError(
+                domain: "TrackerStore",
+                code: 1,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "Failed to decode Tracker"
+                ]
+            )
         }
-        
+         
         let schedule: [WeekDays]?
+         
         if let scheduleString = trackerCoreData.schedule as? String {
             schedule = WeekDays.decode(from: scheduleString)
         } else {
             schedule = trackerCoreData.schedule as? [WeekDays]
         }
-        
+         
         return Tracker(
             id: id,
             name: name,
@@ -75,16 +83,39 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         )
     }
     
-    // Создание и сохранение нового трекера
-    func makeTracker(from tracker: Tracker, in category: TrackerCategoryCoreData) throws {
+    func makeTracker(from tracker: Tracker, in categoryTitle: String) throws {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "title == %@",
+            categoryTitle
+        )
+         
+        let categories = try context.fetch(request)
+         
+        let category: TrackerCategoryCoreData
+         
+        if let existingCategory = categories.first {
+            category = existingCategory
+        } else {
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.title = categoryTitle
+            category = newCategory
+        }
+         
         let trackerEntity = TrackerCoreData(context: context)
+         
         trackerEntity.id = tracker.id
         trackerEntity.name = tracker.name
         trackerEntity.color = tracker.color
         trackerEntity.emoji = tracker.emoji
-        trackerEntity.schedule = tracker.schedule as? NSObject
-        trackerEntity.category = category
         
+        let scheduleString = (tracker.schedule ?? [])
+            .map { String($0.rawValue) }
+            .joined(separator: ",")
+         
+        trackerEntity.schedule = scheduleString as NSString
+        trackerEntity.category = category
+         
         try context.save()
     }
 }

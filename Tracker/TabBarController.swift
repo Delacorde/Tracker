@@ -8,7 +8,12 @@ class TabBarController: UITabBarController{
         super.viewDidLoad()
         
         tabBar.tintColor = .colorSection3
-        let mainVC = TrackerViewController(trackerStore: persistenceContainer.trackerStore)
+        let mainVC = TrackerViewController(
+            trackerStore: persistenceContainer.trackerStore,
+            categoryStore: persistenceContainer.categoryStore,
+            recordStore: persistenceContainer.recordStore
+
+        )
         mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
         

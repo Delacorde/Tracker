@@ -319,7 +319,7 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
     @objc private func createButtonTapped() {
         guard let titleText = textField.text, !titleText.isEmpty else { return }
         let finalColor = selectedColorOption?.name ?? "ColorSection1"
-        let finalEmoji = selectedEmoji ?? "😀" 
+        let finalEmoji = selectedEmoji ?? "😀"
         print(finalColor)
 
         let newTracker = Tracker(

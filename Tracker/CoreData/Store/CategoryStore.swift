@@ -41,7 +41,8 @@ final class CategoryStore: NSObject, CategoryStoreProtocol {
         return objects.compactMap { (trackerCategoryCoreData: TrackerCategoryCoreData) -> TrackerCategory? in
             guard let title = trackerCategoryCoreData.title else { return nil }
             
-            let trackersCoreData = trackerCategoryCoreData.tracker as? Set<TrackerCoreData> ?? []
+            let trackersCoreData =
+                trackerCategoryCoreData.tracker as? Set<TrackerCoreData> ?? []
             
             let trackers = trackersCoreData.compactMap { (trackerCoreData: TrackerCoreData) -> Tracker? in
                 guard

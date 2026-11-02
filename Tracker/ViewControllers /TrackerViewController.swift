@@ -8,15 +8,24 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
     private let trackerStore: TrackerStore
+    private let categoryStore: CategoryStore
+    private let recordStore: TrackerRecordStore
     
-    init(trackerStore: TrackerStore) {
-            self.trackerStore = trackerStore
-            super.init(nibName: nil, bundle: nil)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    init(
+        trackerStore: TrackerStore,
+        categoryStore: CategoryStore,
+        recordStore: TrackerRecordStore
+    ) {
+        self.trackerStore = trackerStore
+        self.categoryStore = categoryStore
+        self.recordStore = recordStore
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     private lazy var addButton: UIButton = {
@@ -76,8 +85,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
             collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
             collectionView.dataSource = self
             collectionView.delegate = self
-            
-           
+        categories = categoryStore.categories
             collectionView.reloadData()
             checkEmptyState()
             
@@ -156,18 +164,19 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
             }
         }
     func didCreateTracker(_ tracker: Tracker) {
-            if let firstCategory = categories.first {
-                var updatedTrackersList = firstCategory.trackers
-                updatedTrackersList.append(tracker)
-                categories[0] = TrackerCategory(title: firstCategory.title, trackers: updatedTrackersList)
-            } else {
-                let defaultCategory = TrackerCategory(title: "Новый день", trackers: [tracker])
-                categories.append(defaultCategory)
-            }
-            
+        let categoryTitle = "Новый день"
+        do {
+            try trackerStore.makeTracker(
+                from: tracker,
+                in: categoryTitle
+            )
+            categories = categoryStore.categories
             checkEmptyState()
             collectionView.reloadData()
+        } catch {
+            print("Ошибка сохранения трекера: \(error)")
         }
+    }
     @objc private func handleDatePickerChange(_ sender: UIDatePicker) {
             let selectedDate = sender.date
             let formatter = DateFormatter()
@@ -236,27 +245,44 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 }
 extension TrackerViewController: TrackerCellDelegate {
     func trackerCellDidTapPlus(_ cell: TrackerCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
         
         let selectedTracker = categories[indexPath.section].trackers[indexPath.row]
-        print("получаем трекер")
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         let chosenDate = calendar.startOfDay(for: dateSelectionPicker.date)
         
-        guard chosenDate <= today else { return }
-        
-        if let existingIndex = completedTrackers.firstIndex(where: { $0.trackerId == selectedTracker.id && calendar.isDate($0.date, inSameDayAs: chosenDate) }) {
-            completedTrackers.remove(at: existingIndex)
-            print("удаляем рекорд")
-        } else {
-            let record = TrackerRecord(trackerId: selectedTracker.id, date: chosenDate)
-            completedTrackers.append(record)
-            print("добавляем новый рекорд")
+        guard chosenDate <= today else {
+            return
         }
         
+        if completedTrackers.contains(where: {
+            $0.trackerId == selectedTracker.id &&
+            calendar.isDate($0.date, inSameDayAs: chosenDate)
+        }) {
+            do {
+                try recordStore.removeRecord(
+                    for: selectedTracker.id,
+                    date: chosenDate
+                )
+            } catch {
+                print("Ошибка удаления записи: \(error)")
+            }
+        } else {
+            do {
+                try recordStore.makeRecord(
+                    for: selectedTracker.id,
+                    date: chosenDate
+                )
+            } catch {
+                print("Ошибка сохранения записи: \(error)")
+            }
+        }
+        
+        completedTrackers = Array(recordStore.completedTrackers)
         collectionView.reloadItems(at: [indexPath])
-        print("перезагружаем ячейку")
     }
 }
