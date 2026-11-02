@@ -15,7 +15,7 @@ final class TrackerCell: UICollectionViewCell {
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.borderWidth = 1
-        view.backgroundColor = UIColor(resource: .colorSection1) // Дефолтный цвет, он всё равно перезапишется
+        view.backgroundColor = UIColor(resource: .colorSection1) 
         view.layer.borderColor = UIColor(resource: .borderCard).cgColor
         return view
     }()
@@ -141,11 +141,11 @@ final class TrackerCell: UICollectionViewCell {
         case "ColorSection16": return .colorSection16
         case "ColorSection17": return .colorSection17
         case "ColorSection18": return .colorSection18
-        default: return .colorSection1 // цвет по умолчанию
+        default: return .colorSection1 
         }
     }
     
-    // 2. Метод настройки ячейки (теперь он стоит ОТДЕЛЬНО, как и должен быть)
+    
     func configure(isCompleted: Bool, completedDays: Int, tracker: Tracker) {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.name

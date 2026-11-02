@@ -39,10 +39,10 @@ final class EmojiSelectionCell: UICollectionViewCell {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            selectionBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            selectionBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
-            selectionBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
-            selectionBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            selectionBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
+            selectionBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
+            selectionBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
+            selectionBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
             
             emojiLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

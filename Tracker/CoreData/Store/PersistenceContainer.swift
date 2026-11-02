@@ -12,7 +12,7 @@ final class PersistenceContainer {
     
     init() {
         // Инициализация контейнера
-        container = NSPersistentContainer(name: "AppModel")
+        container = NSPersistentContainer(name: "CoreData")
         
         container.loadPersistentStores { _, error in
             if let error = error {

@@ -284,13 +284,13 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
             emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            emojiCollectionView.heightAnchor.constraint(equalToConstant: 204),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 220),
             
             // Коллекция Цветов
             colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 34),
             colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            colorCollectionView.heightAnchor.constraint(equalToConstant: 204),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 220),
             colorCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
         ])
     }
@@ -318,8 +318,8 @@ final class HabitViewController: UIViewController, ScheduleViewControllerDelegat
     }
     @objc private func createButtonTapped() {
         guard let titleText = textField.text, !titleText.isEmpty else { return }
-        let finalColor = selectedColorOption?.name ?? "ColorSection1" // если не выбран цвет
-        let finalEmoji = selectedEmoji ?? "😀" // если не выбран эмодзи
+        let finalColor = selectedColorOption?.name ?? "ColorSection1"
+        let finalEmoji = selectedEmoji ?? "😀" 
         print(finalColor)
 
         let newTracker = Tracker(
