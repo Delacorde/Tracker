@@ -1,9 +1,9 @@
 import CoreData
-import UIKit
+
 
 final class PersistenceContainer {
     let trackerStore: TrackerStore
-    let categoryStore: CategoryStore
+    let categoryStore: TrackerCategoryStore
     let recordStore:  TrackerRecordStore
     
     private let context: NSManagedObjectContext
@@ -24,7 +24,7 @@ final class PersistenceContainer {
         context.automaticallyMergesChangesFromParent = true
         
         self.trackerStore = TrackerStore(context: context)
-        self.categoryStore = CategoryStore(context: context)
+        self.categoryStore = TrackerCategoryStore(context: context)
         self.recordStore = TrackerRecordStore(context: context)
     }
     

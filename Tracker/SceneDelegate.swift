@@ -17,8 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        // Если корневой экран — это TabBarController:
-        window.rootViewController = TabBarController()
+       
+        window.rootViewController = TabBarController(
+            persistenceContainer: persistenceContainer
+        )
         
         
         

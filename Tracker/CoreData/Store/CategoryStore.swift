@@ -1,21 +1,21 @@
 import CoreData
 import UIKit
 
-protocol CategoryStoreDelegate: AnyObject {
-    func categoryStoreDidUpdate(_ store: CategoryStoreProtocol)
+protocol TrackerCategoryStoreDelegate: AnyObject {
+    func categoryStoreDidUpdate(_ store: TrackerCategoryStoreProtocol)
 }
 
-protocol CategoryStoreProtocol {
+protocol TrackerCategoryStoreProtocol {
     var categories: [TrackerCategory] { get }
-    var delegate: CategoryStoreDelegate? { get set }
+    var delegate: TrackerCategoryStoreDelegate? { get set }
     func makeCategory(from category: TrackerCategory) throws
     func fetchCategories() throws
 }
 
-final class CategoryStore: NSObject, CategoryStoreProtocol {
+final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     private let context: NSManagedObjectContext
     
-    weak var delegate: CategoryStoreDelegate?
+    weak var delegate: TrackerCategoryStoreDelegate?
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
@@ -85,7 +85,7 @@ final class CategoryStore: NSObject, CategoryStoreProtocol {
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension CategoryStore: NSFetchedResultsControllerDelegate {
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.categoryStoreDidUpdate(self)
     }

@@ -8,12 +8,12 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
     private let trackerStore: TrackerStore
-    private let categoryStore: CategoryStore
+    private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
     
     init(
         trackerStore: TrackerStore,
-        categoryStore: CategoryStore,
+        categoryStore: TrackerCategoryStore,
         recordStore: TrackerRecordStore
     ) {
         self.trackerStore = trackerStore
@@ -87,6 +87,9 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
             collectionView.delegate = self
         categories = categoryStore.categories
             collectionView.reloadData()
+        completedTrackers = Array(recordStore.completedTrackers)
+
+        
             checkEmptyState()
             
             configureSubviews()

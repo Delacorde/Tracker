@@ -14,8 +14,6 @@ protocol TrackerRecordStoreProtocol {
 
 final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
     private let context: NSManagedObjectContext
-    
-    // Делаем lazy var, чтобы он создавался безопасно ПОСЛЕ super.init() и имел доступ к self
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
         let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         request.sortDescriptors = [
@@ -40,9 +38,9 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
     
     init(context: NSManagedObjectContext) {
         self.context = context
-        super.init() // 1. Сначала обязательно вызываем super.init()
+        super.init()
         
-        updateCompletedTrackers() // 2. Затем заполняем начальный массив записей
+        updateCompletedTrackers()
     }
     
     private func updateCompletedTrackers() {
@@ -62,33 +60,44 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
     }
     
     func makeRecord(for trackerId: UUID, date: Date) throws {
+        let calendar = Calendar.current
+        let startDate = calendar.startOfDay(for: date)
+
         let recordEntity = TrackerRecordCoreData(context: context)
         recordEntity.trackerId = trackerId
-        recordEntity.date = date
-        
+        recordEntity.date = startDate
+
         try context.save()
+
+        updateCompletedTrackers()
     }
     
     func removeRecord(for trackerId: UUID, date: Date) throws {
-        let request: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-        
+        let request: NSFetchRequest<TrackerRecordCoreData> =
+            TrackerRecordCoreData.fetchRequest()
+
         let calendar = Calendar.current
         let startDate = calendar.startOfDay(for: date)
-        guard let endDate = calendar.date(byAdding: .day, value: 1, to: startDate) else { return }
-        
+
+        guard let endDate = calendar.date(
+            byAdding: .day,
+            value: 1,
+            to: startDate
+        ) else {
+            return
+        }
+
         request.predicate = NSPredicate(
             format: "trackerId == %@ AND date >= %@ AND date < %@",
             trackerId as CVarArg,
             startDate as NSDate,
             endDate as NSDate
         )
-        
         let records = try context.fetch(request)
-        for record in records {
-            context.delete(record)
-        }
-        
+        records.forEach { context.delete($0) }
         try context.save()
+
+        updateCompletedTrackers()
     }
 }
 
