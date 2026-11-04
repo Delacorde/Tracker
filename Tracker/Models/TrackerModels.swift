@@ -34,3 +34,12 @@ struct TrackerRecord: Hashable{
     let trackerId: UUID
     let date: Date
 }
+extension WeekDays {
+    static func decode(from string: String) -> [WeekDays] {
+        let components = string.components(separatedBy: ",")
+        return components.compactMap { component in
+            guard let intValue = Int(component) else { return nil }
+            return WeekDays(rawValue: intValue)
+        }
+    }
+}
