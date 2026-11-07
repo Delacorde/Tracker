@@ -20,7 +20,8 @@ class TabBarController: UITabBarController{
         let mainVC = TrackerViewController(
             trackerStore: persistenceContainer.trackerStore,
             categoryStore: persistenceContainer.categoryStore,
-            recordStore: persistenceContainer.recordStore
+            recordStore: persistenceContainer.recordStore,
+            persistenceContainer: persistenceContainer
 
         )
         mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)

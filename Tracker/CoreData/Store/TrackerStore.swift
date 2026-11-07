@@ -9,6 +9,7 @@ protocol TrackerStoreProtocol {
     var trackers: [Tracker] { get }
     var delegate: TrackerStoreDelegate? { get set }
     func makeTracker(from tracker: Tracker, in categoryTitle: String) throws
+    func deleteTracker(with id: UUID) throws
 }
 
 final class TrackerStore: NSObject, TrackerStoreProtocol {
@@ -116,6 +117,19 @@ final class TrackerStore: NSObject, TrackerStoreProtocol {
         trackerEntity.schedule = scheduleString as NSString
         trackerEntity.category = category
          
+        try context.save()
+    }
+    func deleteTracker(with id: UUID) throws {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+
+        let trackersToDelete = try context.fetch(request)
+
+        guard let trackerToDelete = trackersToDelete.first else {
+            return
+        }
+
+        context.delete(trackerToDelete)
         try context.save()
     }
 }

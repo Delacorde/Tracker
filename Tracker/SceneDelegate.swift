@@ -16,13 +16,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        
-       
-        window.rootViewController = TabBarController(
-            persistenceContainer: persistenceContainer
-        )
-        
-        
+        if StorageModel.shared.hasSeenOnboarding {
+            let persistenceContainer = PersistenceContainer()
+            window.rootViewController = TabBarController(persistenceContainer: persistenceContainer)
+        } else {
+            window.rootViewController = OnboardingViewController()
+        }
         
         self.window = window
         window.makeKeyAndVisible()
