@@ -10,19 +10,21 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     private let trackerStore: TrackerStore
     private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
+    private let persistenceContainer: PersistenceContainer
     
     init(
         trackerStore: TrackerStore,
         categoryStore: TrackerCategoryStore,
-        recordStore: TrackerRecordStore
+        recordStore: TrackerRecordStore,
+        persistenceContainer: PersistenceContainer
     ) {
         self.trackerStore = trackerStore
         self.categoryStore = categoryStore
         self.recordStore = recordStore
-
+        self.persistenceContainer = persistenceContainer
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -65,136 +67,141 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     }()
     private lazy var emptyStateImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(resource: .logoStar))
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            return imageView
-        }()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     private lazy var emptyStateDescriptionLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "Что будем отслеживать?"
-            label.font = .systemFont(ofSize: 12, weight: .medium)
-            return label
-        }()
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Что будем отслеживать?"
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        return label
+    }()
     override func viewDidLoad() {
-            super.viewDidLoad()
-            view.backgroundColor = .white
-            dateSelectionPicker.addTarget(self, action: #selector(handleDatePickerChange(_:)), for: .valueChanged)
-            
-            collectionView.translatesAutoresizingMaskIntoConstraints = false
-            collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
-            collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
-            collectionView.dataSource = self
-            collectionView.delegate = self
-        categories = categoryStore.categories
-            collectionView.reloadData()
-        completedTrackers = Array(recordStore.completedTrackers)
-
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        dateSelectionPicker.addTarget(self, action: #selector(handleDatePickerChange(_:)), for: .valueChanged)
         
-            checkEmptyState()
-            
-            configureSubviews()
-            configureConstraints()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
+        collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        categories = categoryStore.categories
+        collectionView.reloadData()
+        completedTrackers = Array(recordStore.completedTrackers)
+        
+        
+        checkEmptyState()
+        
+        configureSubviews()
+        configureConstraints()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-
-
-        }
-        // hide keyboard
+        
+        
+    }
+    // hide keyboard
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
     
     private func configureSubviews() {
-            view.addSubview(headerTitleLabel)
-            view.addSubview(addButton)
-            view.addSubview(searchInputTextField)
-            view.addSubview(dateSelectionPicker)
-            view.addSubview(emptyStateImageView)
-            view.addSubview(emptyStateDescriptionLabel)
-            view.addSubview(collectionView)
-            
-            addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        }
+        view.addSubview(headerTitleLabel)
+        view.addSubview(addButton)
+        view.addSubview(searchInputTextField)
+        view.addSubview(dateSelectionPicker)
+        view.addSubview(emptyStateImageView)
+        view.addSubview(emptyStateDescriptionLabel)
+        view.addSubview(collectionView)
+        
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
     private func configureConstraints() {
-            NSLayoutConstraint.activate([
-                // Header Title
-                headerTitleLabel.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 1),
-                headerTitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                
-                // Add Button
-                addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
-                
-                addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
-                
-                addButton.heightAnchor.constraint(equalToConstant: 42),
-                addButton.widthAnchor.constraint(equalToConstant: 42),
-                // searchField 
-                searchInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                searchInputTextField.topAnchor.constraint(equalTo: headerTitleLabel.bottomAnchor, constant: 7),
-                searchInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                searchInputTextField.heightAnchor.constraint(equalToConstant: 36),
-                //date picker
-                dateSelectionPicker.topAnchor.constraint( equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1 ), dateSelectionPicker.trailingAnchor.constraint( equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16 ),
-                
-                emptyStateImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                emptyStateImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                emptyStateImageView.widthAnchor.constraint(equalToConstant: 80),
-                emptyStateImageView.heightAnchor.constraint(equalToConstant: 80),
-                
-                emptyStateDescriptionLabel.topAnchor.constraint(equalTo: emptyStateImageView.bottomAnchor, constant: 8),
-                emptyStateDescriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                emptyStateDescriptionLabel.heightAnchor.constraint(equalToConstant: 18),
-                
-                collectionView.topAnchor.constraint(equalTo: searchInputTextField.bottomAnchor, constant: 10),
-                collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-        }
-    private func checkEmptyState() {
-            let hasNoData = categories.isEmpty || categories.allSatisfy { $0.trackers.isEmpty }
+        NSLayoutConstraint.activate([
+            // Header Title
+            headerTitleLabel.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 1),
+            headerTitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
-            emptyStateImageView.isHidden = !hasNoData
-            emptyStateDescriptionLabel.isHidden = !hasNoData
-            collectionView.isHidden = hasNoData
-        }
+            // Add Button
+            addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
+            
+            addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
+            
+            addButton.heightAnchor.constraint(equalToConstant: 42),
+            addButton.widthAnchor.constraint(equalToConstant: 42),
+            // searchField
+            searchInputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            searchInputTextField.topAnchor.constraint(equalTo: headerTitleLabel.bottomAnchor, constant: 7),
+            searchInputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            searchInputTextField.heightAnchor.constraint(equalToConstant: 36),
+            //date picker
+            dateSelectionPicker.topAnchor.constraint( equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1 ), dateSelectionPicker.trailingAnchor.constraint( equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16 ),
+            
+            emptyStateImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyStateImageView.widthAnchor.constraint(equalToConstant: 80),
+            emptyStateImageView.heightAnchor.constraint(equalToConstant: 80),
+            
+            emptyStateDescriptionLabel.topAnchor.constraint(equalTo: emptyStateImageView.bottomAnchor, constant: 8),
+            emptyStateDescriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateDescriptionLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            collectionView.topAnchor.constraint(equalTo: searchInputTextField.bottomAnchor, constant: 24),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    private func checkEmptyState() {
+        let hasNoData = categories.isEmpty || categories.allSatisfy { $0.trackers.isEmpty }
+        
+        emptyStateImageView.isHidden = !hasNoData
+        emptyStateDescriptionLabel.isHidden = !hasNoData
+        collectionView.isHidden = hasNoData
+    }
     private func isTrackerDoneOnSelectedDate(id: UUID) -> Bool {
-            let targetDate = Calendar.current.startOfDay(for: dateSelectionPicker.date)
-            return completedTrackers.contains { record in
-                record.trackerId == id && Calendar.current.isDate(record.date, inSameDayAs: targetDate)
-            }
+        let targetDate = Calendar.current.startOfDay(for: dateSelectionPicker.date)
+        return completedTrackers.contains { record in
+            record.trackerId == id && Calendar.current.isDate(record.date, inSameDayAs: targetDate)
         }
-    func didCreateTracker(_ tracker: Tracker) {
-        let categoryTitle = "Новый день"
+    }
+    
+    func didCreateTracker(_ tracker: Tracker, category: String) {
         do {
             try trackerStore.makeTracker(
                 from: tracker,
-                in: categoryTitle
+                in: category
             )
             categories = categoryStore.categories
+
+            completedTrackers = Array(recordStore.completedTrackers)
+
             checkEmptyState()
             collectionView.reloadData()
+
         } catch {
             print("Ошибка сохранения трекера: \(error)")
         }
     }
+
     @objc private func handleDatePickerChange(_ sender: UIDatePicker) {
-            let selectedDate = sender.date
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd.MM.yyyy"
-            let dateString = formatter.string(from: selectedDate)
-            print("Выбранная дата:\(dateString)")
-            collectionView.reloadData()
-        }
-    @objc private func addButtonTapped() {
-            let habitCreationVC = HabitViewController()
-            habitCreationVC.delegate = self
-            let navigationVC = UINavigationController(rootViewController: habitCreationVC)
-            present(navigationVC, animated: true)
-        }
+        let selectedDate = sender.date
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        let dateString = formatter.string(from: selectedDate)
+        print("Выбранная дата:\(dateString)")
+        collectionView.reloadData()
     }
+    @objc private func addButtonTapped() {
+        let habitCreationVC = HabitViewController(persistenceContainer: persistenceContainer)
+        habitCreationVC.delegate = self
+        let navigationVC = UINavigationController(rootViewController: habitCreationVC)
+        present(navigationVC, animated: true)
+    }
+}
 extension TrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return categories.count
@@ -231,8 +238,8 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         return 5
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-            return 0
-        }
+        return 0
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 34)
     }
@@ -242,7 +249,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
               let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderView.identifier, for: indexPath) as? HeaderView else {
             return UICollectionReusableView()
         }
-        headerView.titleLabel.text = "Домашний уют"
+        headerView.titleLabel.text = categories[indexPath.section].title
         return headerView
     }
 }
@@ -289,3 +296,4 @@ extension TrackerViewController: TrackerCellDelegate {
         collectionView.reloadItems(at: [indexPath])
     }
 }
+

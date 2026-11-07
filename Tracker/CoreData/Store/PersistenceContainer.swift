@@ -6,7 +6,7 @@ final class PersistenceContainer {
     let categoryStore: TrackerCategoryStore
     let recordStore:  TrackerRecordStore
     
-    private let context: NSManagedObjectContext
+    let context: NSManagedObjectContext
     
     private let container: NSPersistentContainer
     
@@ -28,7 +28,7 @@ final class PersistenceContainer {
         self.recordStore = TrackerRecordStore(context: context)
     }
     
-    //етод сохранения
+    //метод сохранения
     func saveContext() {
         if context.hasChanges {
             do {
