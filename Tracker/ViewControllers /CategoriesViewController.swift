@@ -33,7 +33,7 @@ final class CategoriesViewController: UIViewController {
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Привычки и события можно \nобъединить по смыслу"
+        label.text = NSLocalizedString("habits_events_description", comment: "")
         label.textAlignment = .center
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 12, weight: .medium)
@@ -47,7 +47,7 @@ final class CategoriesViewController: UIViewController {
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(resource: .blackDay)
         label.textAlignment = .center
-        label.text = "Категория"
+        label.text = NSLocalizedString("Category", comment: "категория")
         return label
     }()
     
@@ -56,7 +56,7 @@ final class CategoriesViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(resource: .blackDay)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("Add Category", comment: "Кнопка добавления категории"), for: .normal)
         button.setTitleColor(UIColor(resource: .whiteDay), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         return button

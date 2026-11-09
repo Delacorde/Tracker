@@ -1,0 +1,46 @@
+/*
+  Localizable.strings
+  Tracker
+
+  Created by it on 09.11.2026.
+  
+*/
+
+"Category" = "Категория";
+"Add Category" = "Добавить категорию";
+"New category" = "Новая категория";
+"Enter category name" = "Введите название категории";
+"Done" = "Готово";
+"Schedule" = "Расписание";
+"Color" = "Цвет";
+"Enter tracker name" = "Введите название трекера";
+"New Habit" = "Новая привычка";
+"Cancel" = "Отмена";
+"Create" = "Создать";
+"Every Day" = "Каждый день";
+"No category" = "Без категории";
+"Not selected" = "Не выбрана";
+"Track only what you want" = "Отслеживайте только то, что хотите";
+"Even if it's not glasses of water or yoga" = "Даже если это не литры воды и йога";
+"Now that's technology!" = "Вот это технологии!";
+"Monday" = "Понедельник";
+"Tuesday" = "Вторник";
+"Wednesday" = "Среда";
+"Thursday" = "Четверг";
+"Friday" = "Пятница";
+"Saturday" = "Суббота";
+"Sunday" = "Воскресенье";
+"Trackers" = "Трекеры";
+"Stats" = "Статистика";
+"Search" = "Поиск";
+"What do Track?" = "Что будем отслеживать?";
+"Selected date:" = "Выбранная дата:";
+"0 days" = "0 дней";
+"Mon" = "Пн";
+"Tue" = "Вт";
+"Wed" = "Ср";
+"Thu" = "Чт";
+"Fri" = "Пт";
+"Sat" = "Сб";
+"Sun" = "Вс";
+"habits_events_description" = "Привычки и события можно \nобъединить по смыслу";

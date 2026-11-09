@@ -30,7 +30,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6A6AA4E5304B4F66005C39B4 /* Exceptions for "Tracker" folder in "Tracker" target */ = {
+		6A961D2030A2414F0091E9AA /* Exceptions for "Tracker" folder in "Tracker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -43,7 +43,7 @@
 		6A6AA4BF304B4F64005C39B4 /* Tracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6A6AA4E5304B4F66005C39B4 /* Exceptions for "Tracker" folder in "Tracker" target */,
+				6A961D2030A2414F0091E9AA /* Exceptions for "Tracker" folder in "Tracker" target */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -56,6 +56,11 @@
 		6A6AA4E0304B4F66005C39B4 /* TrackerUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TrackerUITests;
+			sourceTree = "<group>";
+		};
+		6A961D2230A246CF0091E9AA /* Localizable */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Localizable;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -88,6 +93,7 @@
 		6A6AA4B4304B4F64005C39B4 = {
 			isa = PBXGroup;
 			children = (
+				6A961D2230A246CF0091E9AA /* Localizable */,
 				6A6AA4BF304B4F64005C39B4 /* Tracker */,
 				6A6AA4D6304B4F66005C39B4 /* TrackerTests */,
 				6A6AA4E0304B4F66005C39B4 /* TrackerUITests */,
@@ -122,6 +128,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				6A6AA4BF304B4F64005C39B4 /* Tracker */,
+				6A961D2230A246CF0091E9AA /* Localizable */,
 			);
 			name = Tracker;
 			packageProductDependencies = (
@@ -205,6 +212,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 6A6AA4B4304B4F64005C39B4;
 			minimizedProjectReferenceProxies = 1;
@@ -351,6 +359,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -415,6 +424,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

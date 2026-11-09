@@ -52,7 +52,7 @@ final class TrackerCell: UICollectionViewCell {
         count.font = .systemFont(ofSize: 12, weight: .medium)
         count.textColor = .label
         count.translatesAutoresizingMaskIntoConstraints = false
-        count.text = "0 дней"
+        count.text = NSLocalizedString("0 days", comment: "0 days")
         return count
     }()
     
@@ -149,7 +149,11 @@ final class TrackerCell: UICollectionViewCell {
     func configure(isCompleted: Bool, completedDays: Int, tracker: Tracker) {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.name
-        countLabel.text = completedDays.formatDaysCount()
+        countLabel.text = String.localizedStringWithFormat(
+                NSLocalizedString("days_count", comment: "Количество дней"),
+                completedDays
+            )
+        
         
         
         let dynamicColor = getColorFromString(tracker.color)

@@ -24,13 +24,13 @@ class TabBarController: UITabBarController{
             persistenceContainer: persistenceContainer
 
         )
-        mainVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
+        mainVC.tabBarItem = UITabBarItem(title: NSLocalizedString("Trackers", comment: "trackers"), image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
         
         let statisticsVC = UIViewController()
         statisticsVC.view.backgroundColor = .white
         statisticsVC.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("Stats", comment: "stats"),
             image: UIImage(resource: .hare),
             selectedImage: UIImage(resource: .hare)
         )

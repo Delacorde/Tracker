@@ -42,7 +42,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     private lazy var headerTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("Trackers", comment: "trackers")
         label.font = .systemFont(ofSize: 34, weight: .bold)
         label.textColor = .black
         return label
@@ -54,7 +54,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
         textField.leftView = magnifyingGlassIcon
         textField.leftViewMode = .always
         textField.backgroundColor = .color
-        textField.text = "Поиск"
+        textField.text = NSLocalizedString("Search", comment: "search")
         return textField
     }()
     private lazy var dateSelectionPicker: UIDatePicker = {
@@ -62,7 +62,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
         picker.translatesAutoresizingMaskIntoConstraints = false
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale(identifier: "ru_RU")
+        picker.locale = Locale.current
         return picker
     }()
     private lazy var emptyStateImageView: UIImageView = {
@@ -73,7 +73,7 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     private lazy var emptyStateDescriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("What do Track?", comment: "что будем отслеживать ")
         label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
     }()
@@ -190,7 +190,10 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     @objc private func handleDatePickerChange(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
+        
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        
         let dateString = formatter.string(from: selectedDate)
         print("Выбранная дата:\(dateString)")
         collectionView.reloadData()

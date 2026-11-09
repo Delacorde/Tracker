@@ -26,7 +26,7 @@ final class CreateCategoryViewController: UIViewController {
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(resource: .blackDay)
         label.textAlignment = .center
-        label.text = "Новая категория"
+        label.text = NSLocalizedString("New Category", comment: "новая категория")
         return label
     }()
 
@@ -34,8 +34,7 @@ final class CreateCategoryViewController: UIViewController {
         let text = UITextField()
         text.translatesAutoresizingMaskIntoConstraints = false
         text.layer.cornerRadius = 16
-        text.placeholder = "Введите название категории"
-
+        text.placeholder = NSLocalizedString("Enter category name", comment: "название категории")
         let paddingView = UIView(
             frame: CGRect(x: 0, y: 0, width: 16, height: 0)
         )
@@ -51,7 +50,7 @@ final class CreateCategoryViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.backgroundColor = .gray
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("Done", comment: "done"), for: .normal)
         button.setTitleColor(UIColor(resource: .whiteDay), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.isEnabled = false

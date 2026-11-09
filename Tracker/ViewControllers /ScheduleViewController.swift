@@ -8,13 +8,13 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Properties
     weak var delegate: ScheduleViewControllerDelegate?
     private let weekDaysList = [
-        "Понедельник",
-        "Вторник",
-        "Среда",
-        "Четверг",
-        "Пятница",
-        "Суббота",
-        "Воскресенье"
+        NSLocalizedString("Monday", comment: "monday"),
+        NSLocalizedString("Tuesday", comment: "tuesday"),
+        NSLocalizedString("Wednesday", comment: "sreda"),
+        NSLocalizedString("Thursday", comment: "chetverg"),
+        NSLocalizedString("Friday", comment: "friday"),
+        NSLocalizedString("Saturday", comment: "subota"),
+        NSLocalizedString("Sunday", comment: "sunday")
     ]
     private var chosenWeekDays: [WeekDays] = []
         private let cellReuseIdentifier = "ScheduleTableCell"
@@ -30,7 +30,7 @@ final class ScheduleViewController: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 16, weight: .medium)
             label.textColor = UIColor(resource: .blackDay)
-            label.text = "Расписание"
+            label.text = NSLocalizedString("Schedule", comment: "raspisanie")
             return label
         }()
     private lazy var submitButton: UIButton = {
@@ -39,7 +39,7 @@ final class ScheduleViewController: UIViewController {
             button.layer.cornerRadius = 16
             button.backgroundColor = UIColor(resource: .blackDay)
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-            button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("Done", comment: "done"), for: .normal)
             button.tintColor = UIColor(resource: .whiteDay)
             return button
         }()

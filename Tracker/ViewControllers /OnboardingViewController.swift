@@ -4,9 +4,9 @@ final class OnboardingViewController: UIPageViewController {
     // MARK: - Properties
     private lazy var pages: [UIViewController] = [
         makePage(with: UIImage(resource: .firstPage),
-                 text: "Отслеживайте только то, что хотите"),
+                 text: NSLocalizedString("Track only what you want", comment: "")),
         makePage(with: UIImage(resource: .secondPage),
-                 text: "Даже если это не литры воды и йога")
+                 text: NSLocalizedString("Even if it's not glasses of water or yoga", comment: ""))
     ]
     
     private lazy var pageControl: UIPageControl = {
@@ -25,7 +25,7 @@ final class OnboardingViewController: UIPageViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(resource: .blackDay)
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("Now that's technology!", comment: ""), for: .normal)
         button.setTitleColor(UIColor(resource: .whiteDay), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         return button
