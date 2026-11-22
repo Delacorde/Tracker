@@ -1,18 +1,20 @@
 
 import UIKit
 
-final class CreateCategoryViewController: UIViewController {
+final class CreateCategoryViewController: UIViewController,UITextFieldDelegate {
 
     // MARK: - Properties
 
     var onCategoryCreated: (() -> Void)?
 
     private let categoryStore: TrackerCategoryStoreProtocol
+    private let categoryToEdit: String?
 
     // MARK: - Initializer
 
-    init(categoryStore: TrackerCategoryStoreProtocol) {
+    init(categoryStore: TrackerCategoryStoreProtocol, categoryToEdit: String? = nil) {
         self.categoryStore = categoryStore
+        self.categoryToEdit = categoryToEdit
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -26,15 +28,19 @@ final class CreateCategoryViewController: UIViewController {
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(resource: .blackDay)
         label.textAlignment = .center
-        label.text = NSLocalizedString("New Category", comment: "новая категория")
+        label.text = categoryToEdit == nil
+            ? NSLocalizedString("New Category", comment: "новая категория")
+            : NSLocalizedString("Edit Category", comment: "редактирование категории")
         return label
     }()
 
     private lazy var textField: UITextField = {
         let text = UITextField()
+        text.clearButtonMode = .whileEditing
         text.translatesAutoresizingMaskIntoConstraints = false
         text.layer.cornerRadius = 16
         text.placeholder = NSLocalizedString("Enter category name", comment: "название категории")
+        
         let paddingView = UIView(
             frame: CGRect(x: 0, y: 0, width: 16, height: 0)
         )
@@ -49,9 +55,10 @@ final class CreateCategoryViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.backgroundColor = .gray
+        button.backgroundColor = .categoryBUtton
         button.setTitle(NSLocalizedString("Done", comment: "done"), for: .normal)
-        button.setTitleColor(UIColor(resource: .whiteDay), for: .normal)
+        button.setTitleColor(Colors().categoryLabelColor, for: .normal)
+
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.isEnabled = false
         return button
@@ -61,8 +68,8 @@ final class CreateCategoryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = UIColor(resource: .whiteDay)
+        textField.delegate = self
+        view.backgroundColor = Colors().viewBackground
 
         textField.addTarget(
             self,
@@ -72,6 +79,11 @@ final class CreateCategoryViewController: UIViewController {
 
         setUpViews()
         setUpConstraints()
+
+        if let categoryToEdit {
+            textField.text = categoryToEdit
+            textFieldDidChange()
+        }
     }
 
     // MARK: - Setup
@@ -80,6 +92,7 @@ final class CreateCategoryViewController: UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(completeButton)
+        view.addSubview(nameErrorLabel)
 
         completeButton.addTarget(
             self,
@@ -87,9 +100,31 @@ final class CreateCategoryViewController: UIViewController {
             for: .touchUpInside
         )
     }
-
+    private lazy var nameErrorLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Ограничени 38 символов"
+        label.textColor = .systemRed
+        label.font = .systemFont(ofSize: 17)
+        label.isHidden = true
+        label.textAlignment = .center
+        return label
+    }()
+    
     private func setUpConstraints() {
         NSLayoutConstraint.activate([
+            nameErrorLabel.topAnchor.constraint(
+                equalTo: textField.bottomAnchor,
+                constant: 4
+            ),
+
+            nameErrorLabel.leadingAnchor.constraint(
+                equalTo: textField.leadingAnchor
+            ),
+
+            nameErrorLabel.trailingAnchor.constraint(
+                equalTo: textField.trailingAnchor
+            ),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 31),
 
@@ -126,11 +161,10 @@ final class CreateCategoryViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func textFieldDidChange() {
-        let text = textField.text?.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        ) ?? ""
+        let text = textField.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
-        let isValid = !text.isEmpty && text.count < 38
+        let isValid = !text.isEmpty && text.count <= 38
 
         completeButton.isEnabled = isValid
         completeButton.backgroundColor = isValid
@@ -145,17 +179,55 @@ final class CreateCategoryViewController: UIViewController {
             return
         }
 
-        let newCategory = TrackerCategory(
-            title: text,
-            trackers: []
-        )
-
         do {
-            try categoryStore.makeCategory(from: newCategory)
+            if let categoryToEdit {
+                try categoryStore.updateCategory(
+                    oldTitle: categoryToEdit,
+                    newTitle: text
+                )
+            } else {
+                let newCategory = TrackerCategory(
+                    title: text,
+                    trackers: []
+                )
+                try categoryStore.makeCategory(from: newCategory)
+            }
+            
             onCategoryCreated?()
             dismiss(animated: true)
         } catch {
             print("Не удалось сохранить категорию: \(error)")
         }
+        guard let text = textField.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty,
+              text.count <= 38 else {
+            return
+        }
+    }
+    
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+
+        guard let currentText = textField.text,
+              let textRange = Range(range, in: currentText) else {
+            return false
+        }
+
+        let updatedText = currentText.replacingCharacters(
+            in: textRange,
+            with: string
+        )
+
+        if updatedText.count > 38 {
+            nameErrorLabel.isHidden = false
+            return false
+        }
+
+        nameErrorLabel.isHidden = true
+        return true
     }
 }

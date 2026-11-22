@@ -7,7 +7,7 @@ final class TrackerCategoryCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = UIColor(resource: .blackDay)
+        label.textColor = Colors().categoryColor
         return label
     }()
 

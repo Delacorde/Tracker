@@ -1,36 +1,55 @@
-//
-//  TrackerTests.swift
-//  TrackerTests
-//
-//  Created by it on 05.09.2026.
-//
 
 import XCTest
+import SnapshotTesting
+import CoreData
 @testable import Tracker
 
-final class TrackerTests: XCTestCase {
+@MainActor
+final class TrackerViewControllerSnapshotTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testViewController() throws {
+
+        let persistenceContainer = PersistenceContainer(inMemory: true)
+
+        let trackerStore = persistenceContainer.trackerStore
+        let categoryStore = persistenceContainer.categoryStore
+        let recordStore = persistenceContainer.recordStore
+
+        let tracker = Tracker(
+            id: UUID(),
+            name: "посмотреть фильм",
+            color: "ColorSection1",
+            emoji: "✌🏾",
+            schedule: WeekDays.allCases,
+            isPinned: false
+        )
+
+        try trackerStore.makeTracker(
+            from: tracker,
+            in: "Полезные привычки"
+        )
+
+        let vc = TrackerViewController(
+            trackerStore: trackerStore,
+            categoryStore: categoryStore,
+            recordStore: recordStore,
+            persistenceContainer: persistenceContainer
+        )
+
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = vc
+        window.makeKeyAndVisible()
+        
+        vc.loadViewIfNeeded()
+        window.layoutIfNeeded()
+        vc.view.layoutIfNeeded()
+
+        assertSnapshot(
+            matching: vc.view,
+            as: .image
+        )
+
+        window.isHidden = true
+        window.rootViewController = nil
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

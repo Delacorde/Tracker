@@ -44,3 +44,21 @@
 "Sat" = "Sat";
 "Sun" = "Sun";
 "habits_events_description" = "Habits and events can be \ngrouped by meaning";
+"Filter" = "Filter";
+"allTrackers" = "All trackers";
+"dailyTrackers" = "Daily trackers";
+"completedTrackers" = "Completed trackers";
+"notCompletedtrackers" = "Not completed trackers";
+"statistics" = "Statistics";
+"bestPeriod" = "Best period";
+"perfectDays" = "Perfect days";
+"trackersCompleted" = "Trackers completed";
+"averageValue" = "Average value";
+"analyzeEmpty" = "Nothing to analyze yet";
+"edit" = "Edit";
+"delete" = "Delete";
+"deleteTracker" = "Delete tracker ?";
+"historyOfTRacker" = "The execution history for this tracker will also be deleted.";
+"unpin" = "Unpin";
+"pin" = "Pin";
+

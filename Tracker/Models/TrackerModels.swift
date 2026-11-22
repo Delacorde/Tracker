@@ -20,13 +20,14 @@ struct Tracker {
     let name: String
     let color: String
     let emoji: String
-    let schedule: [WeekDays]?
+    let schedule: [WeekDays]
+    var isPinned: Bool = false
 }
 
 //MARK: TrackerCategory
 struct TrackerCategory {
     let title: String
-    let trackers: [Tracker]
+    var trackers: [Tracker]
 }
 
 //MARK: TrackerRecord

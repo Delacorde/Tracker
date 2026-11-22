@@ -1,7 +1,7 @@
 import UIKit
 
 class TabBarController: UITabBarController{
-    private var persistenceContainer = PersistenceContainer()
+    private let persistenceContainer: PersistenceContainer
     
     init(persistenceContainer: PersistenceContainer) {
         self.persistenceContainer = persistenceContainer
@@ -27,8 +27,11 @@ class TabBarController: UITabBarController{
         mainVC.tabBarItem = UITabBarItem(title: NSLocalizedString("Trackers", comment: "trackers"), image: UIImage(resource: .grayCircle) , selectedImage: UIImage(resource: .grayCircle)
         )
         
-        let statisticsVC = UIViewController()
-        statisticsVC.view.backgroundColor = .white
+        let statisticsVC = StatsViewController(
+            trackerStore: persistenceContainer.trackerStore,
+            recordStore: persistenceContainer.recordStore
+        )
+        statisticsVC.view.backgroundColor = Colors().viewBackground
         statisticsVC.tabBarItem = UITabBarItem(
             title: NSLocalizedString("Stats", comment: "stats"),
             image: UIImage(resource: .hare),

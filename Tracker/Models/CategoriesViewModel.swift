@@ -15,8 +15,12 @@ final class CategoriesViewModel {
 
     private(set) var selectedCategory: String?
 
-    init(categoryStore: TrackerCategoryStoreProtocol) {
+    init(
+        categoryStore: TrackerCategoryStoreProtocol,
+        selectedCategory: String? = nil
+    ) {
         self.categoryStore = categoryStore
+        self.selectedCategory = selectedCategory
         self.categoryStore.delegate = self
     }
 

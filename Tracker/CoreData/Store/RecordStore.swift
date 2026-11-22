@@ -10,6 +10,7 @@ protocol TrackerRecordStoreProtocol {
     var delegate: TrackerRecordStoreDelegate? { get set }
     func makeRecord(for trackerId: UUID, date: Date) throws
     func removeRecord(for trackerId: UUID, date: Date) throws
+    func removeAllRecords(for trackerId: UUID) throws
 }
 
 final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
@@ -97,6 +98,24 @@ final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
         records.forEach { context.delete($0) }
         try context.save()
 
+        updateCompletedTrackers()
+    }
+    func removeAllRecords(for trackerId: UUID) throws {
+        let request: NSFetchRequest<TrackerRecordCoreData> =
+            TrackerRecordCoreData.fetchRequest()
+
+        request.predicate = NSPredicate(
+            format: "trackerId == %@",
+            trackerId as CVarArg
+        )
+
+        let records = try context.fetch(request)
+
+        records.forEach {
+            context.delete($0)
+        }
+
+        try context.save()
         updateCompletedTrackers()
     }
 }
