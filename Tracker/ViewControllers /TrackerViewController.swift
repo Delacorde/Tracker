@@ -105,10 +105,26 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     }()
     
     @objc func switchToFilter() {
+        AnalyticsService.report(
+            event: "click",
+            item: "filter"
+        )
         let filterVC = FilterViewController(selectedFilter: selectedFilter)
         filterVC.delegate = self
         filterVC.modalPresentationStyle = .pageSheet
         present(filterVC, animated: true)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        AnalyticsService.report(event: "close")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        AnalyticsService.report(event: "open")
     }
 
     override func viewDidLoad() {
@@ -261,13 +277,13 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
             emptyStateDescriptionLabel.heightAnchor.constraint(equalToConstant: 18),
             
             collectionView.topAnchor.constraint(equalTo: searchInputTextField.bottomAnchor, constant: 24),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: filterButton.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            //filterButton
+
             filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            filterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
-            filterButton.heightAnchor.constraint(equalToConstant : 50),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
             filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
     }
@@ -309,6 +325,10 @@ final class TrackerViewController: UIViewController, HabitViewDelegate {
     }
 
     @objc private func addButtonTapped() {
+        AnalyticsService.report(
+            event: "click",
+            item: "add_track"
+        )
         let habitCreationVC = HabitViewController(persistenceContainer: persistenceContainer)
         habitCreationVC.delegate = self
         let navigationVC = UINavigationController(rootViewController: habitCreationVC)
@@ -381,7 +401,10 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
             ) { [weak self] _ in
 
                 guard let self = self else { return }
-
+                AnalyticsService.report(
+                    event: "click",
+                    item: "edit"
+                )
                 let editVC = HabitViewController(
                     persistenceContainer: self.persistenceContainer
                 )
@@ -431,7 +454,12 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
             ) { [weak self] _ in
 
                 guard let self = self else { return }
-
+                
+                AnalyticsService.report(
+                    event: "click",
+                    item: "delete"
+                )
+                
                 let alert = UIAlertController(
                     title: NSLocalizedString("deleteTracker", comment: "delTracker"),
                     message: "История выполнения этого трекера тоже будет удалена.",
@@ -513,6 +541,10 @@ extension TrackerViewController: TrackerCellDelegate {
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
+        AnalyticsService.report(
+            event: "click",
+            item: "track"
+        )
         
         let selectedTracker = categories[indexPath.section].trackers[indexPath.row]
         

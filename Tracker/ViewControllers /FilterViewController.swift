@@ -167,9 +167,14 @@ extension FilterViewController: UITableViewDataSource {
         cell.textLabel?.textAlignment = .left
 
         cell.tintColor = .systemBlue
-        cell.accessoryType = indexPath.row == selectedRow
-            ? .checkmark
-            : .none
+        cell.tintColor = .systemBlue
+        if selectedFilter == .completed || selectedFilter == .notCompleted {
+            cell.accessoryType = indexPath.row == selectedRow
+                ? .checkmark
+                : .none
+        } else {
+            cell.accessoryType = .none
+        }
 
         return cell
     }
