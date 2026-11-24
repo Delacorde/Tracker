@@ -8,44 +8,52 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Properties
     weak var delegate: ScheduleViewControllerDelegate?
     private let weekDaysList = [
-        "Понедельник",
-        "Вторник",
-        "Среда",
-        "Четверг",
-        "Пятница",
-        "Суббота",
-        "Воскресенье"
+        NSLocalizedString("Monday", comment: "monday"),
+        NSLocalizedString("Tuesday", comment: "tuesday"),
+        NSLocalizedString("Wednesday", comment: "sreda"),
+        NSLocalizedString("Thursday", comment: "chetverg"),
+        NSLocalizedString("Friday", comment: "friday"),
+        NSLocalizedString("Saturday", comment: "subota"),
+        NSLocalizedString("Sunday", comment: "sunday")
     ]
     private var chosenWeekDays: [WeekDays] = []
+    func configureSelectedDays(_ days: [WeekDays]) {
+        chosenWeekDays = days
+
+        if isViewLoaded {
+            scheduleTableView.reloadData()
+        }
+    }
         private let cellReuseIdentifier = "ScheduleTableCell"
     private lazy var scheduleTableView: UITableView = {
             let tableView = UITableView(frame: .zero, style: .insetGrouped)
             tableView.translatesAutoresizingMaskIntoConstraints = false
             tableView.isScrollEnabled = false
-            tableView.backgroundColor = .clear
+        tableView.backgroundColor = Colors().viewBackground
             return tableView
         }()
     private lazy var navigationTitleLabel: UILabel = {
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 16, weight: .medium)
-            label.textColor = UIColor(resource: .blackDay)
-            label.text = "Расписание"
+        label.textColor = Colors().headerColor
+            label.text = NSLocalizedString("Schedule", comment: "raspisanie")
             return label
         }()
     private lazy var submitButton: UIButton = {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.layer.cornerRadius = 16
-            button.backgroundColor = UIColor(resource: .blackDay)
+        button.backgroundColor = Colors().headerColor
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-            button.setTitle("Готово", for: .normal)
-            button.tintColor = UIColor(resource: .whiteDay)
+        button.setTitle(NSLocalizedString("Done", comment: "done"), for: .normal)
+        button.setTitleColor(Colors().viewBackground, for: .normal)
+        button.tintColor = Colors().viewBackground
             return button
         }()
     override func viewDidLoad() {
             super.viewDidLoad()
-            view.backgroundColor = UIColor(resource: .whiteDay)
+        view.backgroundColor = Colors().viewBackground
             
             scheduleTableView.dataSource = self
             scheduleTableView.delegate = self
@@ -103,6 +111,10 @@ extension ScheduleViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath)
         
         let toggleSwitch = UISwitch(frame: .zero)
+
+        let currentDay = WeekDays.allCases[indexPath.row]
+        toggleSwitch.isOn = chosenWeekDays.contains(currentDay)
+        
         toggleSwitch.isOn = false
         toggleSwitch.onTintColor = .blue
         toggleSwitch.tag = indexPath.row

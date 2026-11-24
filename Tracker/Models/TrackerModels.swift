@@ -4,13 +4,13 @@ enum WeekDays: Int, CaseIterable {
     case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
     var shortName: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Cб"
-        case .sunday: return "Вс"
+        case .monday: return NSLocalizedString("Mon", comment: "mon")
+        case .tuesday: return NSLocalizedString("Tue", comment: "tue")
+        case .wednesday: return NSLocalizedString("Wed", comment: "wed")
+        case .thursday: return NSLocalizedString("Thu", comment: "thu")
+        case .friday: return NSLocalizedString("Fri", comment: "fri")
+        case .saturday: return NSLocalizedString("Sut", comment: "sut")
+        case .sunday: return NSLocalizedString("Sun", comment: "sun")
         }
     }
 }
@@ -20,13 +20,14 @@ struct Tracker {
     let name: String
     let color: String
     let emoji: String
-    let schedule: [WeekDays]?
+    let schedule: [WeekDays]
+    var isPinned: Bool = false
 }
 
 //MARK: TrackerCategory
 struct TrackerCategory {
     let title: String
-    let trackers: [Tracker]
+    var trackers: [Tracker]
 }
 
 //MARK: TrackerRecord
